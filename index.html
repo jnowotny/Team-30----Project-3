@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 <head>
     <title>TrashTalk.com Homepage! - Team 30</title>
@@ -10,13 +8,17 @@
     <center>
     <script src = getMLBdata.js></script>
     <form>
-    <select id="selectGame" onchange=redirect(this)>
+    <select id = "selectGame" onchange = showScores(this)>
         <option>--Select game--</option>
     </select>
     </form>
     </center>
     <script>
-        var games = getGames();
+        getGames();
+        //updateXML();
     </script>
+    <center>
+    <table border="2" id='table' cellspacing="5", align = "center">
+    </center>
 </body>
 </html>

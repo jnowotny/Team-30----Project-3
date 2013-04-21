@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE todaysmatchup [
+<!ELEMENT todaysmatchup (game*)>
+<!ELEMENT game (home_team_name, away_team_name, scores)>
+<!ELEMENT home_team_name (#PCDATA)>
+<!ELEMENT away_team_name (#PCDATA)>
+<!ELEMENT scores (inning*)>
+<!ELEMENT inning (home_score, away_score)>
+<!ELEMENT home_score (#PCDATA)>
+<!ELEMENT away_score (#PCDATA)>
+]>
+
+<todaysmatchup>
+    <game>
+        <home_team_name>HOME</home_team_name>
+        <away_team_name>AWAY</away_team_name>
+        <score>
+            <inning>
+                <home_score>-1</home_score>
+                <away_score>-1</away_score>
+            </inning>
+        </score>
+    </game>
+</todaysmatchup>

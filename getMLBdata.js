@@ -1,3 +1,5 @@
+var gamesToday = new Array();
+
 function getGames() {
     d = new Date();
     year = d.getFullYear();
@@ -8,30 +10,139 @@ function getGames() {
     day = d.getDate();
     if (day < 10)
         day = "0" + day;
-    xmlhttp = new XMLHttpRequest();
+    if (window.XMLHttpRequest)
+        xmlhttp = new XMLHttpRequest();
+    else
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
     xmlhttp.open("GET","http://gd2.mlb.com/components/game/mlb/year_"+year+"/month_"+month+"/day_"+day+"/master_scoreboard.xml",false);
     xmlhttp.send();
-    xmlDoc=xmlhttp.responseXML;
-    x=xmlDoc.getElementsByTagName("game");
-    gamesToday = new Array();
-    gamesID = new Array();
+    xmlDoc = xmlhttp.responseXML;
+    x = xmlDoc.getElementsByTagName("game");
+    //gamesToday = new Array();
     matchup = new String();
+    var select = document.getElementById("selectGame");
     for (i = 0; i < x.length; i++) {
+        //document.write("success!");
         matchup = x[i].getAttribute("home_team_name") + " vs. " + x[i].getAttribute("away_team_name");
-        gamesToday.push(matchup);
-        gamesID.push(x[i].getAttribute("id"));
-    }
-    var select = document.getElementById("selectGame");  
-    for (i = 0; i < gamesToday.length; i++) {
+        //for drop-down menu
         var Entry = document.createElement("option");
-        Entry.text = gamesToday[i];
+        Entry.text = matchup;
         select.add(Entry, null);
+        //for scoreboard
+        scores = new Array();
+        if (x[i].childNodes[3].nodeName == "linescore") {
+            for (j = 1; j <= x[i].childNodes[3].childNodes.length; j+=2) {
+                inning = new Array();
+                inning.push(x[i].childNodes[3].childNodes[j].getAttribute("away"));
+                inning.push(x[i].childNodes[3].childNodes[j].getAttribute("home"));
+                scores.push(inning);
+                if (j == x[i].childNodes[3].childNodes.length - 2)
+                    break;
+            }
+        }
+        gamesToday.push(scores);
     }
-    return gamesID;
+    //document.write(gamesToday[0][0][0]);
 }
 
-function redirect(selection) {
-    document.write(selection.selectedIndex);
+function showScores(selection) {
+    var tbl = document.getElementById('table');
+    while (tbl.rows.length >0) 
+        tbl.deleteRow(0);
+    
+    var table = document.getElementById('table');
+    var row1 = table.insertRow(-1);
+    for (i = 1; i <= 9; i++) {
+        var cell = row1.insertCell(-1);
+        cell.appendChild(document.createTextNode(i));
+    }
+    if (gamesToday[selection.selectedIndex - 1].length > 15) {
+        for (i = 10; i < gamesToday[selection.selectedIndex - 1].length - 15; i++) {
+            var cell = row1.insertCell(-1);
+            cell.appendChild(document.createTextNode(i));
+        }
+    }
+    var stats = ["R", "H", "E", "HR", "SB", "SO"];
+    for (i = 0; i < stats.length; i++) {
+        var cell = row1.insertCell(-1);
+        cell.appendChild(document.createTextNode(stats[i]));
+    }
+    
+    //AWAY SCORES
+    var row2 = table.insertRow(-1); 
+    if (gamesToday[selection.selectedIndex - 1].length >= 15) {
+        for (i = 0; i < gamesToday[selection.selectedIndex - 1].length; i++) {
+            var cell = row2.insertCell(-1);
+            if (gamesToday[selection.selectedIndex - 1][i][0] != null)
+                cell.appendChild(document.createTextNode(gamesToday[selection.selectedIndex - 1][i][0]));//code
+            else cell.appendChild(document.createTextNode(" "));
+        }
+    }
+    else {
+        if (gamesToday[selection.selectedIndex - 1].length > 0) {
+            for (i = 0; i < gamesToday[selection.selectedIndex - 1].length - 6; i++) {
+                var cell = row2.insertCell(-1);
+                if (gamesToday[selection.selectedIndex - 1][i][0] != null)
+                    cell.appendChild(document.createTextNode(gamesToday[selection.selectedIndex - 1][i][0]));//code
+                else cell.appendChild(document.createTextNode(" "));
+            }
+            for (i = 0; i < 15 - gamesToday[selection.selectedIndex - 1].length; i++) {
+                var cell = row2.insertCell(-1);
+                cell.appendChild(document.createTextNode(" "));
+            }
+            for (i = gamesToday[selection.selectedIndex - 1].length - 6; i < gamesToday[selection.selectedIndex - 1].length; i++) {
+                var cell = row2.insertCell(-1);
+                if (gamesToday[selection.selectedIndex - 1][i][0] != null)
+                    cell.appendChild(document.createTextNode(gamesToday[selection.selectedIndex - 1][i][0]));//code
+                else cell.appendChild(document.createTextNode(" "));
+            }
+        }
+        else {
+            for (i = 0; i < 15; i++) {
+                var cell = row2.insertCell(-1);
+                cell.appendChild(document.createTextNode(" ")); 
+            }
+        }
+    }
+    
+    //HOME SCORES
+    var row3 = table.insertRow(-1); 
+    if (gamesToday[selection.selectedIndex - 1].length >= 15) {
+        //document.write("hello");
+        for (i = 0; i < gamesToday[selection.selectedIndex - 1].length; i++) {
+            var cell = row3.insertCell(-1);
+            if (gamesToday[selection.selectedIndex - 1][i][1] != null)
+                cell.appendChild(document.createTextNode(gamesToday[selection.selectedIndex - 1][i][1]));//code
+            else cell.appendChild(document.createTextNode(" "));
+        }
+    }
+    else {
+        if (gamesToday[selection.selectedIndex - 1].length > 0) {
+            for (i = 0; i < gamesToday[selection.selectedIndex - 1].length - 6; i++) {
+                var cell = row3.insertCell(-1);
+                if (gamesToday[selection.selectedIndex - 1][i][1] != null)
+                    cell.appendChild(document.createTextNode(gamesToday[selection.selectedIndex - 1][i][1]));//code
+                else cell.appendChild(document.createTextNode(" "));
+            }
+            for (i = 0; i < 15 - gamesToday[selection.selectedIndex - 1].length; i++) {
+                var cell = row3.insertCell(-1);
+                cell.appendChild(document.createTextNode(" "));
+            }
+            for (i = gamesToday[selection.selectedIndex - 1].length - 6; i < gamesToday[selection.selectedIndex - 1].length; i++) {
+                var cell = row3.insertCell(-1);
+                if (gamesToday[selection.selectedIndex - 1][i][1] != null)
+                    cell.appendChild(document.createTextNode(gamesToday[selection.selectedIndex - 1][i][1]));//code
+                else cell.appendChild(document.createTextNode(" "));
+            }
+        }
+        else {
+            for (i = 0; i < 15; i++) {
+                var cell = row3.insertCell(-1);
+                cell.appendChild(document.createTextNode(" ")); 
+            }
+        }
+    }
+    document.body.appendChild(table);
 }
 
 function getScores(teamName) {
