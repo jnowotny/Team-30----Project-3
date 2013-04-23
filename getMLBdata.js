@@ -2,8 +2,6 @@ var gamesToday = new Array();
 var teamNames = new Array();
 
 function getGames() {
-    while (gamesToday.length > 0)
-        gamesToday.pop();
     d = new Date();
     year = d.getFullYear();
     month = d.getMonth();
@@ -24,17 +22,11 @@ function getGames() {
     //gamesToday = new Array();
     matchup = new String();
     var select = document.getElementById("selectGame");
-    while (select.length > 0)
-        select.remove(0);
-    var defaultOption = document.createElement("option");
-    defaultOption.text = "--Select Game--";
-    select.add(defaultOption, null);
-    
     for (i = 0; i < x.length; i++) {
         //document.write("success!");
-        names = new Array();
-	names.push(x[i].getAttribute("home_team_name"));
-	names.push(x[i].getAttribute("away_team_name"));
+		names = new Array();
+		names.push(x[i].getAttribute("home_team_name"));
+		names.push(x[i].getAttribute("away_team_name"));
         teamNames.push(names);
         matchup = x[i].getAttribute("home_team_name") + " vs. " + x[i].getAttribute("away_team_name");
         //for drop-down menu
@@ -59,10 +51,11 @@ function getGames() {
 }
 
 function showScores(selection) {
+    var tbl = document.getElementById('table');
+    while (tbl.rows.length >0) 
+        tbl.deleteRow(0);
+    
     var table = document.getElementById('table');
-    while (table.rows.length > 0) 
-        table.deleteRow(0);
-
     var row1 = table.insertRow(-1);
     for (i = 1; i <= 9; i++) {
         var cell = row1.insertCell(-1);

@@ -2,46 +2,26 @@
 
 <html>
 
-<param id="query" value="redsox" />
-<param id="query9" value="rangers" />
-<param id="query" value="redsox" />
-<param id="query9" value="rangers" />
-<param id="query" value="redsox" />
-<param id="query9" value="rangers" />
-<param id="query" value="redsox" />
-<param id="query9" value="rangers" />
-<param id="query" value="redsox" />
-<param id="query9" value="rangers" />
-<param id="query" value="redsox" />
-<param id="query9" value="rangers" />
-<param id="query" value="redsox" />
-<param id="query9" value="rangers" />
-
-
-
-
 <script src = getMLBdata.js></script>
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script>
 	function switchGames(selection) {
-            //getGames();
-            var name = teamNames[selection.selectedIndex - 1][0];
-            document.getElementById('query').value = name;
-            name = teamNames[selection.selectedIndex - 1][1];
-            document.getElementById('query2').value = name;
-            
-            showScores(selection);
-            var params = {
-                q: $('#query').val(),
-                rpp: 5
-            };
-            searchTwitter(params);
-            
-            params = {
-                q: $('#query2').val(),
-                rpp: 5
-            };
-            searchTwitter2(params);
+		var name = teamNames[selection.selectedIndex - 1][0];
+        document.getElementById('query').value = name;
+        name = teamNames[selection.selectedIndex - 1][1];
+        document.getElementById('query2').value = name;
+		showScores(selection);
+		var params = {
+			q: $('#query').val(),
+			rpp: 5
+		};
+		searchTwitter(params);
+		
+		 params = {
+			q: $('#query2').val(),
+			rpp: 5
+		};
+		searchTwitter2(params);
 	}
 </script>
 
@@ -120,7 +100,7 @@
 	<div style="padding: 20px;">
 			<!--input id="query" type="text" value="mets" /-->
 			<!--input id="submit" type="button" value="Search" /-->
-			<param id="query" value="redsox" />
+			<param id="query" value="" />
 		</div>
 		<div id="tweets" align="left" style="padding: 20px; width: 300px; hight:300px; float:left;">
 			Tweets will go here.
@@ -129,12 +109,25 @@
 	<div style="padding: 20px;">
 			<!--input id="query2" type="text" value="mets" /-->
 			<!--input id="submit2" type="button" value="Search" /-->
-			<param id="query2" value="mets" />
+			<param id="query2" value="" />
 			
 		</div>
 		<div id="tweets2" align="right" style="padding: 20px; width: 300px; hight:300px; float:right;">
 			Tweets will go here.
 		</div>
 		
+	<script>
+		var params = {
+			q: $('#query').val(),
+			rpp: 5
+		};
+		searchTwitter(params);
+		
+		 params = {
+			q: $('#query2').val(),
+			rpp: 5
+		};
+		searchTwitter2(params);
+	</script>
 </body>
 </html>
