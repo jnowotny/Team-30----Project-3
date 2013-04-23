@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>My first web page</title>
+	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <!-- This is a comment, by the way -->
+
+</head>
+
+<body>
+
+<div id="fb-root"></div>
+
+<h1>My first web page</h1>
+
+<a class="twitter-timeline" href="https://twitter.com/search?q=%23mlb" data-widget-id="324194562035818496">Tweets about "#mlb"</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+<a class="twitter-timeline" href="https://twitter.com/search?q=%23mets" data-widget-id="324195602890100736">Tweets about "#mets"</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+<p>
+http://search.twitter.com/search.json?q=blue%20angels&rpp=5&include_entities=true&result_type=mixed
+</p>
+
+<script>
+var my_JSON_object = {};
+var http_request = new XMLHttpRequest();
+http_request.open("GET", "http://search.twitter.com/search.json?q=blue%20angels&rpp=5&include_entities=true&result_type=mixed", true);
+http_request.onreadystatechange = function () {
+    var done = 4, ok = 200;
+    if (http_request.readyState == done && http_request.status == ok) {
+        my_JSON_object = JSON.parse(http_request.responseText);
+		console.log(my_JSON_object);
+    }
+};
+//http_request.send();
+</script>
+
+<!-- use local .js files for now, until we get an HTTP server-->
+<script>
+$.getJSON("jtest.js", function(data) {
+	console.log(data);
+	var numtweets = data.results.length;
+	for (var i = 0; i < numtweets; i++) {
+		console.log("result " + i);
+		console.log(data.results[i].from_user_name);
+		console.log(data.results[i].id_str);
+		console.log(data.results[i].text);
+		
+		
+	}
+	//alert(data.results[0].text);
+})
+.fail(function( jqxhr, textStatus, error ) {
+  var err = textStatus + ', ' + error;
+  console.log( "Request Failed: " + err);
+});
+//console.log(data);
+
+
+</script>
+
+<blockquote class="twitter-tweet"><p></p>&mdash;<a href="https://twitter.com/twitterapi/status/133640144317198338"></a></blockquote>
+
+<blockquote class="twitter-tweet"><p></p>&mdash;<a href="https://twitter.com/VinnieBehme9944/status/326059952873566209"></a></blockquote>
+
+
+
+<h2>What this is</h2>
+<p>A simple page put together using HTML.</p>
+
+</body>
+
+</html>

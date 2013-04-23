@@ -1,4 +1,5 @@
 var gamesToday = new Array();
+var teamNames = new Array();
 
 function getGames() {
     d = new Date();
@@ -23,6 +24,8 @@ function getGames() {
     var select = document.getElementById("selectGame");
     for (i = 0; i < x.length; i++) {
         //document.write("success!");
+		teamNames.push(x[i].getAttribute("home_team_name"));
+		teamNames.push(x[i].getAttribute("away_team_name"));
         matchup = x[i].getAttribute("home_team_name") + " vs. " + x[i].getAttribute("away_team_name");
         //for drop-down menu
         var Entry = document.createElement("option");

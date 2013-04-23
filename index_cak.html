@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>My first web page</title>
+	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	
+    <!-- This is a comment, by the way -->
+
+</head>
+
+<body>
+
+<div id="fb-root"></div>
+
+<h1>My first web page</h1>
+
+<p>
+http://search.twitter.com/search.json?q=blue%20angels&rpp=5&include_entities=true&result_type=mixed
+</p>
+
+
+<script>
+var my_JSON_object = {};
+var http_request = new XMLHttpRequest();
+http_request.open("GET", "http://search.twitter.com/search.json?q=blue%20angels&rpp=5&include_entities=true&result_type=mixed", true);
+http_request.onreadystatechange = function () {
+    var done = 4, ok = 200;
+    if (http_request.readyState == done && http_request.status == ok) {
+        my_JSON_object = JSON.parse(http_request.responseText);
+		console.log(my_JSON_object);
+    }
+};
+http_request.send();
+</script>
+
+<script src="getreqtok.php">
+	
+</script>
+
+<!-- use local .js files for now, until we get an HTTP server-->
+<script>
+$.getJSON("jtest.js", function(data) {
+	console.log(data);
+	var numtweets = data.length;
+	for (var i = 0; i < numtweets; i++) {
+		console.log("result " + i);
+		console.log(data[i].from_user_name);
+		console.log(data[i].id_str);
+		console.log(data[i].text);
+		
+		
+	}
+})
+.fail(function( jqxhr, textStatus, error ) {
+  var err = textStatus + ', ' + error;
+  console.log( "Request Failed: " + err);
+});
+//console.log(data);
+
+
+</script>
+
+<script>
+function searchTwitter(query) {
+    $.ajax({
+        url: 'http://search.twitter.com/search.json?' + jQuery.param(query),
+        dataType: 'jsonp',
+        success: function(data) {
+            var tweets = $('#tweets');
+            tweets.html('');
+            for (res in data['results']) {
+				tweets.append('<div>' + data['results'][res]['from_user'] + ' wrote: <p>' + data['results'][res]['text'] + '</p></div><br />');
+        }
+        }
+    });
+}
+
+function searchTwitter2(query2) {
+    $.ajax({
+        url: 'http://search.twitter.com/search.json?' + jQuery.param(query2),
+        dataType: 'jsonp',
+        success: function(data) {
+            var tweets2 = $('#tweets2');
+            tweets2.html('');
+            for (res in data['results']) {
+				tweets2.append('<div>' + data['results'][res]['from_user'] + ' wrote: <p>' + data['results'][res]['text'] + '</p></div><br />');
+        }
+        }
+    });
+}
+
+$(document).ready(function() {
+    $('#submit').click(function() {
+        var params = {
+            q: $('#query').val(),
+            rpp: 5
+        };
+        searchTwitter(params);
+    });
+});
+
+$(document).ready(function() {
+    $('#submit2').click(function() {
+        var params = {
+            q: $('#query2').val(),
+            rpp: 5
+        };
+        searchTwitter2(params);
+    });
+});
+</script>
+
+<div style="padding: 20px;">
+        <input id="query" type="text" value="mlb" />
+        <input id="submit" type="button" value="Search" />
+    </div>
+    <div id="tweets" align="left" style="padding: 20px; width: 300px; hight:300px; float:left;">
+		Tweets will go here.
+    </div>
+	
+<div style="padding: 20px;">
+        <input id="query2" type="text" value="mets" />
+        <input id="submit2" type="button" value="Search" />
+    </div>
+    <div id="tweets2" align="right" style="padding: 20px; width: 300px; hight:300px; float:right;">
+		Tweets will go here.
+    </div>
+
+<a class="twitter-timeline" href="https://twitter.com/search?q=%23mlb" data-widget-id="324194562035818496">Tweets about "#mlb"</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+<a class="twitter-timeline" href="https://twitter.com/search?q=%23mets" data-widget-id="324195602890100736">Tweets about "#mets"</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+<h2>What this is</h2>
+<p>A simple page put together using HTML.</p>
+
+</body>
+
+</html>

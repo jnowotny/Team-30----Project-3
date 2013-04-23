@@ -2,25 +2,6 @@
 
 <html>
 
-<script src = getMLBdata.js></script>
-<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-<script>
-	function switchGames(selection) {
-		showScores(selection);
-		var params = {
-			q: $('#query9').val(),
-			rpp: 5
-		};
-		searchTwitter(params);
-		
-		 params = {
-			q: $('#query10').val(),
-			rpp: 5
-		};
-		searchTwitter2(params);
-	}
-</script>
-
 <head>
     <title>TrashTalk.com Homepage! - Team 30</title>
 </head>
@@ -29,7 +10,7 @@
     <center>
     <script src = getMLBdata.js></script>
     <form>
-    <select id = "selectGame" onchange = switchGames(this)>
+    <select id = "selectGame" onchange = showScores(this)>
         <option>--Select game--</option>
     </select>
     </form>
@@ -41,7 +22,6 @@
     <center>
     <table border="2" id='table' cellspacing="5", align = "center">
     </center>
-	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 	<script>
 		function searchTwitter(query) {
 			$.ajax({
@@ -97,7 +77,6 @@
 			<!--input id="query" type="text" value="mets" /-->
 			<!--input id="submit" type="button" value="Search" /-->
 			<param id="query" value="redsox" />
-			<param id="query9" value="rangers" />
 		</div>
 		<div id="tweets" align="left" style="padding: 20px; width: 300px; hight:300px; float:left;">
 			Tweets will go here.
@@ -107,7 +86,6 @@
 			<!--input id="query2" type="text" value="mets" /-->
 			<!--input id="submit2" type="button" value="Search" /-->
 			<param id="query2" value="mets" />
-			<param id="query10" value="astros" />
 			
 		</div>
 		<div id="tweets2" align="right" style="padding: 20px; width: 300px; hight:300px; float:right;">
