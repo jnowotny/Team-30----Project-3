@@ -55,7 +55,8 @@
 					var tweets = $('#tweets');
 					tweets.html('');
 					for (res in data['results']) {
-						tweets.append('<div>' + data['results'][res]['from_user'] + ' wrote: <p>' + data['results'][res]['text'] + '</p></div><br />');
+						//tweets.append('<img>' + data['results'][res]['profile_image_url'] + '</img>');
+						tweets.append('<div><img src="' + data['results'][res]['profile_image_url'] + '"><br />' + data['results'][res]['from_user_name'] + ' wrote: <p>' + data['results'][res]['text'] + '</p></div><br />');
 				}
 				}
 			});
@@ -69,7 +70,7 @@
 					var tweets2 = $('#tweets2');
 					tweets2.html('');
 					for (res in data['results']) {
-						tweets2.append('<div>' + data['results'][res]['from_user'] + ' wrote: <p>' + data['results'][res]['text'] + '</p></div><br />');
+						tweets2.append('<div><img src="' + data['results'][res]['profile_image_url'] + '"><br />' + data['results'][res]['from_user_name'] + ' wrote: <p>' + data['results'][res]['text'] + '</p></div><br />');
 				}
 				}
 			});
@@ -94,7 +95,6 @@
 				searchTwitter2(params);
 			});
 		});
-
 	</script>
 
 	<div style="padding: 20px;">
@@ -115,7 +115,7 @@
 		<div id="tweets2" align="right" style="padding: 20px; width: 300px; hight:300px; float:right;">
 			Tweets will go here.
 		</div>
-		
+	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>	
 	<script>
 		var params = {
 			q: $('#query').val(),
