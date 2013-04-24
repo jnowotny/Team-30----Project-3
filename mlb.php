@@ -1,4 +1,7 @@
 <?php
-$file = file_get_contents('http://gd2.mlb.com/components/game/mlb/year_2013/month_04/day_23/master_scoreboard.json');
+$day = date("d");
+$month = date("m");
+$year = date("Y");
+$file = file_get_contents('http://gd2.mlb.com/components/game/mlb/year_'."".$year."".'/month_'."".$month."".'/day_'."".$day."".'/master_scoreboard.json');
 echo $file; 
 ?>
