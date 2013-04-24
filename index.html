@@ -5,24 +5,32 @@
 <script src = getMLBdata.js></script>
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script>
-	function switchGames(selection) {
-		var name = teamNames[selection.selectedIndex - 1][0];
-        document.getElementById('query').value = name;
-        name = teamNames[selection.selectedIndex - 1][1];
-        document.getElementById('query2').value = name;
-		showScores(selection);
-		var params = {
-			q: $('#query').val(),
-			rpp: 5
-		};
-		searchTwitter(params);
-		
-		 params = {
-			q: $('#query2').val(),
-			rpp: 5
-		};
-		searchTwitter2(params);
-	}
+    var selected;
+    function switchGames(selection) {
+        selected = selection;
+        if (selection.selectedIndex != 0) {
+            var name = teamNames[selection.selectedIndex - 1][0];
+            document.getElementById('query').value = name;
+            name = teamNames[selection.selectedIndex - 1][1];
+            document.getElementById('query2').value = name;
+            showScores(selection);
+            var params = {
+                q: $('#query').val(),
+                rpp: 5
+            };
+            searchTwitter(params);
+            params = {
+                q: $('#query2').val(),
+                rpp: 5
+            };
+            searchTwitter2(params);
+        }
+    }
+    
+    window.setInterval(function() {
+        switchGames(selected);
+    }, 3000);
+    
 </script>
 
 <head>

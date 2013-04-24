@@ -11,7 +11,7 @@ function getGames2() {
     day = d.getDate();
     if (day < 10)
         day = "0" + day;
-    $.getJSON("http://gd2.mlb.com/components/game/mlb/year_"+year+"/month_"+month+"/day_"+24+"/master_scoreboard.json", function(JSON) {
+    $.getJSON("mlb.php", function(JSON) {
         matchup = new String();
         var select = document.getElementById("selectGame");
         $.each(JSON.data.games.game, function(i, game) {
@@ -118,18 +118,17 @@ function getGames() {
 }
 
 function showScores(selection) {
-    var tbl = document.getElementById('table');
-    while (tbl.rows.length >0) 
-        tbl.deleteRow(0);
-    
     var table = document.getElementById('table');
+    while (table.rows.length >0) 
+        table.deleteRow(0);
+    
     var row1 = table.insertRow(-1);
     for (i = 1; i <= 9; i++) {
         var cell = row1.insertCell(-1);
         cell.appendChild(document.createTextNode(i));
     }
     if (gamesToday[selection.selectedIndex - 1].length > 15) {
-        for (i = 10; i < gamesToday[selection.selectedIndex - 1].length - 15; i++) {
+        for (i = 10; i <= gamesToday[selection.selectedIndex - 1].length - 6; i++) {
             var cell = row1.insertCell(-1);
             cell.appendChild(document.createTextNode(i));
         }
