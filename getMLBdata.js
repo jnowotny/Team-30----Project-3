@@ -1,6 +1,73 @@
 var gamesToday = new Array();
 var teamNames = new Array();
 
+function getGames2() {
+    d = new Date();
+    year = d.getFullYear();
+    month = d.getMonth();
+    month++;
+    if (month < 10)
+        month = "0" + month;
+    day = d.getDate();
+    if (day < 10)
+        day = "0" + day;
+    $.getJSON("http://gd2.mlb.com/components/game/mlb/year_"+year+"/month_"+month+"/day_"+24+"/master_scoreboard.json", function(JSON) {
+        matchup = new String();
+        var select = document.getElementById("selectGame");
+        $.each(JSON.data.games.game, function(i, game) {
+            names = new Array();
+            names.push(game.home_team_name);
+            names.push(game.away_team_name);
+            teamNames.push(names);
+            //for drop-down menu
+            matchup = game.home_team_name + " vs. " + game.away_team_name;
+            var Entry = document.createElement("option");
+            Entry.text = matchup;
+            select.add(Entry, null);
+            //for scoreboard
+            scores = new Array();
+            if (game.status.status != "Preview") {
+                $.each(game.linescore.inning, function(j, inning) {
+                    inningArray = new Array();
+                    inningArray.push(inning.away);
+                    inningArray.push(inning.home);
+                    scores.push(inningArray);
+                })
+                runs = new Array();
+                runs.push(game.linescore.r.away);
+                runs.push(game.linescore.r.home);
+                scores.push(runs);
+                
+                hits = new Array();
+                hits.push(game.linescore.h.away);
+                hits.push(game.linescore.h.home);
+                scores.push(hits);
+                
+                errors = new Array();
+                errors.push(game.linescore.e.away);
+                errors.push(game.linescore.e.home);
+                scores.push(errors);
+
+                homeruns = new Array();
+                homeruns.push(game.linescore.hr.away);
+                homeruns.push(game.linescore.hr.home);
+                scores.push(homeruns);
+                
+                bases = new Array();
+                bases.push(game.linescore.sb.away);
+                bases.push(game.linescore.sb.home);
+                scores.push(bases);
+               
+                strikes = new Array();
+                strikes.push(game.linescore.so.away);
+                strikes.push(game.linescore.so.home);   
+                scores.push(strikes);
+            }
+            gamesToday.push(scores);
+        })
+    })
+}
+
 function getGames() {
     d = new Date();
     year = d.getFullYear();
@@ -24,9 +91,9 @@ function getGames() {
     var select = document.getElementById("selectGame");
     for (i = 0; i < x.length; i++) {
         //document.write("success!");
-		names = new Array();
-		names.push(x[i].getAttribute("home_team_name"));
-		names.push(x[i].getAttribute("away_team_name"));
+	names = new Array();
+	names.push(x[i].getAttribute("home_team_name"));
+	names.push(x[i].getAttribute("away_team_name"));
         teamNames.push(names);
         matchup = x[i].getAttribute("home_team_name") + " vs. " + x[i].getAttribute("away_team_name");
         //for drop-down menu
