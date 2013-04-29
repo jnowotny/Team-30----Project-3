@@ -10,7 +10,8 @@
     function switchGames(selection) {
         selected = selection;
         if (selection.selectedIndex > 0) {
-            //getGames2();
+            document.getElementById('away').src = teamPics[selection.selectedIndex - 1][0];
+            document.getElementById('home').src = teamPics[selection.selectedIndex - 1][1];
             var name = teamNames[selection.selectedIndex - 1][0];
             document.getElementById('query').value = name;
             name = teamNames[selection.selectedIndex - 1][1];
@@ -31,7 +32,7 @@
     
     window.setInterval(function() {
         switchGames(selected);
-        if (count > 5) {
+        if (count > 4) {
             gamesToday = [];
             updateScores();
             count = 0;
@@ -48,104 +49,101 @@
 
 <body>
     <center>
+    <font size = "24">Welcome to <i>Trash Talk!</i></font>
+    <p>Please select a game
     <script src = getMLBdata.js></script>
-    <form>
     <select id = "selectGame" onchange = switchGames(this)>
         <option>--Select game--</option>
     </select>
-    </form>
-    </center>
+    <h1>
+        <table border="2" id='table' cellspacing="5" align = "center"></table>
+    </h1>
+    Status:
+    <script>getGames();</script>
+    <img id = 'away' src="" width="79" height="76" align = "left" border = "0">
+    <img id = "home" src="" width="79" height="76" align = "right" border = "0">
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
     <script>
-        getGames2();
-        //updateXML();
+        function searchTwitter(query) {
+            $.ajax({
+                url: 'http://search.twitter.com/search.json?' + jQuery.param(query),
+                dataType: 'jsonp',
+                success: function(data) {
+                    var tweets = $('#tweets');
+                    tweets.html('');
+                    for (res in data['results']) {
+                        //tweets.append('<img>' + data['results'][res]['profile_image_url'] + '</img>');
+                        tweets.append('<div><img src="' + data['results'][res]['profile_image_url'] + '"><br />' + data['results'][res]['from_user_name'] + ' wrote: <p>' + data['results'][res]['text'] + '</p></div><br />');
+                    }   
+                }
+            });
+        }
+
+        function searchTwitter2(query2) {
+            $.ajax({
+                url: 'http://search.twitter.com/search.json?' + jQuery.param(query2),
+                dataType: 'jsonp',
+                success: function(data) {
+                    var tweets2 = $('#tweets2');
+                    tweets2.html('');
+                    for (res in data['results']) 
+                        tweets2.append('<div><img src="' + data['results'][res]['profile_image_url'] + '"><br />' + data['results'][res]['from_user_name'] + ' wrote: <p>' + data['results'][res]['text'] + '</p></div><br />');
+                }
+            });
+        }
+
+        $(document).ready(function() {
+                $('#submit').click(function() {
+                        var params = {
+                                q: $('#query').val(),
+                                rpp: 5
+                        };
+                        searchTwitter(params);
+                });
+        });
+
+        $(document).ready(function() {
+                $('#submit2').click(function() {
+                        var params = {
+                                q: $('#query2').val(),
+                                rpp: 5
+                        };
+                        searchTwitter2(params);
+                });
+        });
     </script>
-    <center>
-    <table border="2" id='table' cellspacing="5", align = "center">
+    <div style="padding: 20px;">
+                    <!--input id="query" type="text" value="mets" /-->
+                    <!--input id="submit" type="button" value="Search" /-->
+                    <param id="query" value="" />
+            </div>
+            <div id="tweets" align = "left" style="padding: 20px; width: 300px; hight:300px; float:left; clear:both">
+                    Tweets will go here.
+            </div>
+            
+    <div style="padding: 20px;">
+                    <!--input id="query2" type="text" value="mets" /-->
+                    <!--input id="submit2" type="button" value="Search" /-->
+                    <param id="query2" value="" />
+                    
+            </div>
+            <div id="tweets2" align="right" style="padding: 20px; width: 300px; hight:300px; float:right">
+                    Tweets will go here.
+            </div>
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>	
+    <script>
+            var params = {
+                    q: $('#query').val(),
+                    rpp: 5
+            };
+            searchTwitter(params);
+            
+             params = {
+                    q: $('#query2').val(),
+                    rpp: 5
+            };
+            searchTwitter2(params);
+    </script>
     </center>
-	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-	<script>
-		function searchTwitter(query) {
-			$.ajax({
-				url: 'http://search.twitter.com/search.json?' + jQuery.param(query),
-				dataType: 'jsonp',
-				success: function(data) {
-					var tweets = $('#tweets');
-					tweets.html('');
-					for (res in data['results']) {
-						//tweets.append('<img>' + data['results'][res]['profile_image_url'] + '</img>');
-						tweets.append('<div><img src="' + data['results'][res]['profile_image_url'] + '"><br />' + data['results'][res]['from_user_name'] + ' wrote: <p>' + data['results'][res]['text'] + '</p></div><br />');
-				}
-				}
-			});
-		}
-
-		function searchTwitter2(query2) {
-			$.ajax({
-				url: 'http://search.twitter.com/search.json?' + jQuery.param(query2),
-				dataType: 'jsonp',
-				success: function(data) {
-					var tweets2 = $('#tweets2');
-					tweets2.html('');
-					for (res in data['results']) {
-						tweets2.append('<div><img src="' + data['results'][res]['profile_image_url'] + '"><br />' + data['results'][res]['from_user_name'] + ' wrote: <p>' + data['results'][res]['text'] + '</p></div><br />');
-				}
-				}
-			});
-		}
-
-		$(document).ready(function() {
-			$('#submit').click(function() {
-				var params = {
-					q: $('#query').val(),
-					rpp: 5
-				};
-				searchTwitter(params);
-			});
-		});
-
-		$(document).ready(function() {
-			$('#submit2').click(function() {
-				var params = {
-					q: $('#query2').val(),
-					rpp: 5
-				};
-				searchTwitter2(params);
-			});
-		});
-	</script>
-
-	<div style="padding: 20px;">
-			<!--input id="query" type="text" value="mets" /-->
-			<!--input id="submit" type="button" value="Search" /-->
-			<param id="query" value="" />
-		</div>
-		<div id="tweets" align="left" style="padding: 20px; width: 300px; hight:300px; float:left;">
-			Tweets will go here.
-		</div>
-		
-	<div style="padding: 20px;">
-			<!--input id="query2" type="text" value="mets" /-->
-			<!--input id="submit2" type="button" value="Search" /-->
-			<param id="query2" value="" />
-			
-		</div>
-		<div id="tweets2" align="right" style="padding: 20px; width: 300px; hight:300px; float:right;">
-			Tweets will go here.
-		</div>
-	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>	
-	<script>
-		var params = {
-			q: $('#query').val(),
-			rpp: 5
-		};
-		searchTwitter(params);
-		
-		 params = {
-			q: $('#query2').val(),
-			rpp: 5
-		};
-		searchTwitter2(params);
-	</script>
 </body>
 </html>
-			

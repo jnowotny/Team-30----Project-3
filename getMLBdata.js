@@ -1,7 +1,8 @@
 var gamesToday = new Array();
 var teamNames = new Array();
+var teamPics = new Array();
 
-function getGames2() {
+function getGames() {
     gamesToday = [];
     teamNames = [];
     $.getJSON("mlb.php", function(JSON) {
@@ -14,6 +15,11 @@ function getGames2() {
             names.push(game.away_team_name);
             names.push(game.home_team_name);
             teamNames.push(names);
+            //for team logo picture URLs
+            pics = new Array();
+            pics.push("http://mlb.mlb.com/mlb/images/team_logos/logo_"+game.away_file_code+"_79x76.jpg");
+            pics.push("http://mlb.mlb.com/mlb/images/team_logos/logo_"+game.home_file_code+"_79x76.jpg");
+            teamPics.push(pics);
             //for drop-down menu
             matchup = game.away_team_name + " vs. " + game.home_team_name;
             var Entry = document.createElement("option");
@@ -61,55 +67,6 @@ function getGames2() {
             gamesToday.push(scores);
         })
     })
-}
-
-function getGames() {
-    d = new Date();
-    year = d.getFullYear();
-    month = d.getMonth();
-    month++;
-    if (month < 10)
-        month = "0" + month;
-    day = d.getDate();
-    if (day < 10)
-        day = "0" + day;
-    if (window.XMLHttpRequest)
-        xmlhttp = new XMLHttpRequest();
-    else
-        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-    xmlhttp.open("GET","http://gd2.mlb.com/components/game/mlb/year_"+year+"/month_"+month+"/day_"+day+"/master_scoreboard.xml",false);
-    xmlhttp.send();
-    xmlDoc = xmlhttp.responseXML;
-    x = xmlDoc.getElementsByTagName("game");
-    //gamesToday = new Array();
-    matchup = new String();
-    var select = document.getElementById("selectGame");
-    for (i = 0; i < x.length; i++) {
-        //document.write("success!");
-	names = new Array();
-	names.push(x[i].getAttribute("home_team_name"));
-	names.push(x[i].getAttribute("away_team_name"));
-        teamNames.push(names);
-        matchup = x[i].getAttribute("home_team_name") + " vs. " + x[i].getAttribute("away_team_name");
-        //for drop-down menu
-        var Entry = document.createElement("option");
-        Entry.text = matchup;
-        select.add(Entry, null);
-        //for scoreboard
-        scores = new Array();
-        if (x[i].childNodes[3].nodeName == "linescore") {
-            for (j = 1; j <= x[i].childNodes[3].childNodes.length; j+=2) {
-                inning = new Array();
-                inning.push(x[i].childNodes[3].childNodes[j].getAttribute("away"));
-                inning.push(x[i].childNodes[3].childNodes[j].getAttribute("home"));
-                scores.push(inning);
-                if (j == x[i].childNodes[3].childNodes.length - 2)
-                    break;
-            }
-        }
-        gamesToday.push(scores);
-    }
-    //document.write(gamesToday[0][0][0]);
 }
 
 function showScores(selection) {
