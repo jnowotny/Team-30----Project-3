@@ -5,10 +5,12 @@
 <script src = getMLBdata.js></script>
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script>
-    var selected;
+    var selected = -1;
+    var count = 0;
     function switchGames(selection) {
         selected = selection;
-        if (selection.selectedIndex != 0) {
+        if (selection.selectedIndex > 0) {
+            //getGames2();
             var name = teamNames[selection.selectedIndex - 1][0];
             document.getElementById('query').value = name;
             name = teamNames[selection.selectedIndex - 1][1];
@@ -29,7 +31,14 @@
     
     window.setInterval(function() {
         switchGames(selected);
-    }, 3000);
+        if (count > 5) {
+            gamesToday = [];
+            updateScores();
+            count = 0;
+        }
+        else
+            count++;
+    }, 5000);
     
 </script>
 
@@ -139,3 +148,4 @@
 	</script>
 </body>
 </html>
+			
