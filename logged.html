@@ -8,7 +8,23 @@
 
 <body>
 <?php include ("twitter_oauth.php"); ?>
-logged in
+
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script>
+$.getJSON('user_info.php', function(data) {
+console.log(data);
+});
+
+$.getJSON('friends_ids.php', function(data) {
+console.log(data);
+});
+
+$.getJSON('timeline.php', function(data) {
+console.log(data);
+//for each tweet, discard tweets which don't contain desired entities
+});
+
+</script>
 </body>
 
 </html>
