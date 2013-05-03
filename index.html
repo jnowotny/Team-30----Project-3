@@ -31,14 +31,16 @@
     }
     
     window.setInterval(function() {
-        switchGames(selected);
         if (count > 4) {
             gamesToday = [];
             updateScores();
             count = 0;
+            switchGames(selected);
         }
-        else
+        else {
+            switchGames(selected);
             count++;
+        }
     }, 5000);
     
 </script>
