@@ -7,9 +7,10 @@
 <script>
     var selected = -1;
     var count = 0;
+    var updating = false;
     function switchGames(selection) {
         selected = selection;
-        if (selection.selectedIndex > 0) {
+        if (selection.selectedIndex > 0 && !updating) {
             document.getElementById('away').src = teamPics[selection.selectedIndex - 1][0];
             document.getElementById('home').src = teamPics[selection.selectedIndex - 1][1];
             var name = teamNames[selection.selectedIndex - 1][0];
@@ -31,11 +32,14 @@
     }
     
     window.setInterval(function() {
-        if (count > 4) {
-            gamesToday = [];
+        if (count > 4) { 
+            updating = true;
             updateScores();
             count = 0;
-            switchGames(selected);
+            setTimeout(function(){
+                switchGames(selected);
+            },1000);
+            updating = false;
         }
         else {
             switchGames(selected);
@@ -51,18 +55,15 @@
 
 <body>
     <center>
-	<a href="http://trashtalk.host56.com/twitter_login.php">Log in</a>
-	<!-- Note: url may vary from host to host-->
+    <a href="http://trashtalk.site88.net/twitter_login.php">Log in</a>
     <font size = "24">Welcome to <i>Trash Talk!</i></font>
     <p>Please select a game
     <script src = getMLBdata.js></script>
     <select id = "selectGame" onchange = switchGames(this)>
         <option>--Select game--</option>
     </select>
-    <h1>
-        <table border="2" id='table' cellspacing="5" align = "center"></table>
-    </h1>
-    Status:
+    <table border="2" id='table' cellspacing="5" align = "center"></table>
+    <p id = "Game Status"></p>
     <script>getGames();</script>
     <img id = 'away' src="" width="79" height="76" align = "left" border = "0">
     <img id = "home" src="" width="79" height="76" align = "right" border = "0">

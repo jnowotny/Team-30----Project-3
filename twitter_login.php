@@ -28,7 +28,7 @@ session_start();
 $twitteroauth = new TwitterOAuth('tfnrxGhKHcjEixkUWydfNQ', 'DiIIdWtb22WthTD47skbWRin3uyLRVNNPBLIuoC9M');
 
 //$request_token = $twitteroauth->getRequestToken('http://trashtalk.host56.com/twitter_oauth.php');
-$request_token = $twitteroauth->getRequestToken('http://trashtalk.host56.com/logged.html');
+$request_token = $twitteroauth->getRequestToken('http://trashtalk.site88.net/logged.html');
 
 $_SESSION['oauth_token'] = $request_token['oauth_token'];
 $_SESSION['oauth_token_secret'] = $request_token['oauth_token_secret'];

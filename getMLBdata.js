@@ -1,15 +1,12 @@
 var gamesToday = new Array();
 var teamNames = new Array();
 var teamPics = new Array();
+var gameStatuses = new Array();
 
 function getGames() {
-    gamesToday = [];
-    teamNames = [];
     $.getJSON("mlb.php", function(JSON) {
         matchup = new String();
         var select = document.getElementById("selectGame");
-        while (select.length > 1)
-            select.remove(1);
         $.each(JSON.data.games.game, function(i, game) {
             names = new Array();
             names.push(game.away_team_name);
@@ -27,7 +24,9 @@ function getGames() {
             select.add(Entry, null);
             //for scoreboard
             scores = new Array();
-            if (game.status.status != "Preview") {
+            if (game.alerts != undefined)
+                gameStatuses.push(game.alerts.text);
+            if (game.status.status != "Preview" && game.linescore != undefined) {
                 $.each(game.linescore.inning, function(j, inning) {
                     inningArray = new Array();
                     inningArray.push(inning.away);
@@ -70,6 +69,10 @@ function getGames() {
 }
 
 function showScores(selection) {
+    if (gameStatuses[selection.selectedIndex - 1] != undefined)
+        document.getElementById("Game Status").innerHTML = gameStatuses[selection.selectedIndex - 1];
+    else 
+        document.getElementById("Game Status").innerHTML = "No game information available";
     var table = document.getElementById('table');
     while (table.rows.length >0) 
         table.deleteRow(0);
@@ -204,13 +207,15 @@ function showScores(selection) {
 }
 
 function updateScores() {
-    while (gamesToday.length > 0) 
-        gamesToday.remove(0);
+    gamesToday = [];
+    gameStatuses=[];
     $.getJSON("mlb.php", function(JSON) {
         $.each(JSON.data.games.game, function(i, game) {
             //for scoreboard
             scores = new Array();
-            if (game.status.status != "Preview") {
+            if (game.alerts != undefined)
+                gameStatuses.push(game.alerts.text);
+            if (game.status.status != "Preview" && game.linescore != undefined) {
                 $.each(game.linescore.inning, function(j, inning) {
                     inningArray = new Array();
                     inningArray.push(inning.away);
@@ -250,4 +255,4 @@ function updateScores() {
             gamesToday.push(scores);
         })
     })
-}
+}		
