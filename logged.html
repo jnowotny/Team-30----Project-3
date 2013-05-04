@@ -1,30 +1,79 @@
 <!DOCTYPE html>
-
 <html>
 
-<head>
+<script src = getMLBdata.js></script>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script>
+    var selected = -1;
+    var count = 0;
+    var updating = false;
+    function switchGames(selection) {
+        selected = selection;
+        if (selection.selectedIndex > 0 && !updating) {
+            document.getElementById('away').src = teamPics[selection.selectedIndex - 1][0];
+            document.getElementById('home').src = teamPics[selection.selectedIndex - 1][1];
+            var name = teamNames[selection.selectedIndex - 1][0];
+            //document.getElementById('query').value = name;
+            name = teamNames[selection.selectedIndex - 1][1];
+            //document.getElementById('query2').value = name;
+            showScores(selection);
+        }
+    }
+    
+    window.setInterval(function() {
+        if (count > 4) { 
+            updating = true;
+            updateScores();
+            count = 0;
+            setTimeout(function(){
+                switchGames(selected);
+            },1000);
+            updating = false;
+        }
+        else {
+            switchGames(selected);
+            count++;
+        }
+    }, 5000);
+    
+</script>
 
+<head>
+    <title>TrashTalk.com Homepage! - Team 30</title>
 </head>
 
 <body>
-<?php include ("twitter_oauth.php"); ?>
+    <center>
+    <?php include ("twitter_oauth.php"); ?>
 
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script>
-$.getJSON('user_info.php', function(data) {
-console.log(data);
-});
-
-$.getJSON('friends_ids.php', function(data) {
-console.log(data);
-});
-
-$.getJSON('timeline.php', function(data) {
-console.log(data);
-//for each tweet, discard tweets which don't contain desired entities
-});
+    var friendIDs = new Array();
+    $.getJSON('friends_ids.php', function(data) {
+        $.each(data.ids, function(ids, i) {
+            friendIDs.push(data.ids);
+        })
+        
+        console.log(data);
+    });
+    
+    $.getJSON('timeline.php', function(data) {
+        console.log(data);
+    //for each tweet, discard tweets which don't contain desired entities
+    });
 
 </script>
+    <font size = "24">Welcome to <i>Trash Talk!</i></font>
+    <p>Please select a game
+    <script src = getMLBdata.js></script>
+    <select id = "selectGame" onchange = switchGames(this)>
+        <option>--Select game--</option>
+    </select>
+    <table border="2" id='table' cellspacing="5" align = "center"></table>
+    <p id = "Game Status"></p>
+    <script>getGames();</script>
+    <img id = 'away' src="" width="79" height="76" align = "left" border = "0">
+    <img id = "home" src="" width="79" height="76" align = "right" border = "0">
+</center>
 </body>
-
 </html>
