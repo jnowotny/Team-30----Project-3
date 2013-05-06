@@ -25,10 +25,10 @@ PRIMARY KEY(id)
 require("twitteroauth.php");
 session_start();
 
-$twitteroauth = new TwitterOAuth('tfnrxGhKHcjEixkUWydfNQ', 'DiIIdWtb22WthTD47skbWRin3uyLRVNNPBLIuoC9M');
+$twitteroauth = new TwitterOAuth('mBbU4Bo5Topp6VEwrLM8ow', 'YqJiwzcj4olqP14hjvzcz5CHqkmvvGurINd6UKbiwOs');
 
 //$request_token = $twitteroauth->getRequestToken('http://trashtalk.host56.com/twitter_oauth.php');
-$request_token = $twitteroauth->getRequestToken('http://trashtalk.site88.net/logged.html');
+$request_token = $twitteroauth->getRequestToken('http://trashtalk.netii.net/logged.html');
 
 $_SESSION['oauth_token'] = $request_token['oauth_token'];
 $_SESSION['oauth_token_secret'] = $request_token['oauth_token_secret'];

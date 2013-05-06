@@ -4,24 +4,37 @@
 <script src = getMLBdata.js></script>
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script>
+
     var selected = -1;
     var count = 0;
     var updating = false;
+    var user_name = "dumb";
+    var tweetsArray = new Array();
+    function favoritesPlaying() {
+        $.post('teamsPlaying.php', {teamnames: teamNames, username: user_name}, function(data) {
+            var teamsPlayingString = "The following of your favorite teams are playing today: ";
+            teamsPlayingString = teamsPlayingString.concat(data);
+            document.getElementById("favTeamsPlaying").textContent = teamsPlayingString;
+        });
+    }
     function switchGames(selection) {
+        favoritesPlaying();
         selected = selection;
         if (selection.selectedIndex > 0 && !updating) {
             document.getElementById('away').src = teamPics[selection.selectedIndex - 1][0];
             document.getElementById('home').src = teamPics[selection.selectedIndex - 1][1];
-            var name = teamNames[selection.selectedIndex - 1][0];
-            //document.getElementById('query').value = name;
-            name = teamNames[selection.selectedIndex - 1][1];
-            //document.getElementById('query2').value = name;
+            document.getElementById("away team").firstChild.data = "Favorite " + teamNames[selection.selectedIndex - 1][0];
+            document.getElementById("home team").firstChild.data = "Favorite " + teamNames[selection.selectedIndex - 1][1];
+            var team_name = teamNames[selection.selectedIndex - 1][0];
+            searchTwitter(team_name);
+            team_name = teamNames[selection.selectedIndex - 1][1];
+            searchTwitter2(team_name);
             showScores(selection);
         }
     }
     
     window.setInterval(function() {
-        if (count > 4) { 
+        if (count == 4) { 
             updating = true;
             updateScores();
             count = 0;
@@ -29,13 +42,30 @@
                 switchGames(selected);
             },1000);
             updating = false;
+            count = 0;
         }
-        else {
+        else if (count < 4) {
             switchGames(selected);
             count++;
         }
     }, 5000);
-    
+
+    function favoriteTeam(id) {
+        if (user_name != "dumb") {
+            var elem = document.getElementById(id);
+            var team_name = elem.textContent || elem.innerText;
+            team_name = team_name.substring(9);
+            //var url="favTeam.php?username="+ user_name + "&team_name=" + team_name;
+            $.post('favTeam.php', {username: user_name, teamname: team_name});
+        }
+    }
+    function getTimeline() {    
+        $.getJSON('timeline.php', function(data) {
+            //console.log(data);
+            //for each tweet, discard tweets which don't contain desired entities
+            tweetsArray = data;
+        });
+    }
 </script>
 
 <head>
@@ -48,32 +78,69 @@
 
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script>
-    var friendIDs = new Array();
-    $.getJSON('friends_ids.php', function(data) {
-        $.each(data.ids, function(ids, i) {
-            friendIDs.push(data.ids);
-        })
-        
-        console.log(data);
-    });
-    
-    $.getJSON('timeline.php', function(data) {
-        console.log(data);
-    //for each tweet, discard tweets which don't contain desired entities
-    });
+
+$.getJSON('user_info.php', function(data) {
+    user_name = data.screen_name
+});
+
+getTimeline();
 
 </script>
     <font size = "24">Welcome to <i>Trash Talk!</i></font>
+    <p>
+    <text id = "favTeamsPlaying"></text>
     <p>Please select a game
     <script src = getMLBdata.js></script>
     <select id = "selectGame" onchange = switchGames(this)>
         <option>--Select game--</option>
     </select>
+    <button type = "button" id = "away team" onclick = "favoriteTeam(this.id)">Favorite</button>
+    <button type = "button" id = "home team" onclick = "favoriteTeam(this.id)">Favorite</button>
     <table border="2" id='table' cellspacing="5" align = "center"></table>
     <p id = "Game Status"></p>
     <script>getGames();</script>
     <img id = 'away' src="" width="79" height="76" align = "left" border = "0">
     <img id = "home" src="" width="79" height="76" align = "right" border = "0">
 </center>
+
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script>
+function searchTwitter(team_name) {
+    var tweetsAway = $('#tweets');
+    tweetsAway.html('');
+    
+    for (i = 0; i < tweetsArray.length; i++) {
+
+        if (tweetsArray[i].text.search(team_name) > -1) 
+            tweetsAway.append('<div><img src="' + tweetsArray[i]['user']['profile_image_url'] + '"><br />' + tweetsArray[i]['user']['name'] + ' wrote: <p>' + tweetsArray[i]['text'] + '</p></div><br />');            
+    }
+}
+function searchTwitter2(team_name) {
+    var tweetsHome = $('#tweets2');
+    tweetsHome.html('');
+    for (i = 0; i < tweetsArray.length; i++) {
+        if (tweetsArray[i]['text'].search(team_name) > -1) 
+            tweetsHome.append('<div><img src="' + tweetsArray[i]['user']['profile_image_url'] + '"><br />' + tweetsArray[i]['user']['name'] + ' wrote: <p>' + tweetsArray[i]['text'] + '</p></div><br />');            
+    }
+}
+</script>
+<div style="padding: 20px;">
+                    <!--input id="query" type="text" value="mets" /-->
+                    <!--input id="submit" type="button" value="Search" /-->
+                    <param id="query" value="" />
+            </div>
+            <div id="tweets" align = "left" style="padding: 20px; width: 300px; hight:300px; float:left; clear:both">
+                    Tweets will go here.
+            </div>
+            
+    <div style="padding: 10px;">
+                    <!--input id="query2" type="text" value="mets" /-->
+                    <!--input id="submit2" type="button" value="Search" /-->
+                    <param id="query2" value="" />
+                    
+            </div>
+            <div id="tweets2" align="right" style="padding: 20px; width: 300px; hight:300px; float:right">
+                    Tweets will go here.
+            </div>
 </body>
 </html>

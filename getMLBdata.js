@@ -207,10 +207,21 @@ function showScores(selection) {
 }
 
 function updateScores() {
+    teamPics = [];
+    teamNames= [];
     gamesToday = [];
     gameStatuses=[];
     $.getJSON("mlb.php", function(JSON) {
         $.each(JSON.data.games.game, function(i, game) {
+            names = new Array();
+            names.push(game.away_team_name);
+            names.push(game.home_team_name);
+            teamNames.push(names);
+            //for pics
+            pics = new Array();
+            pics.push("http://mlb.mlb.com/mlb/images/team_logos/logo_"+game.away_file_code+"_79x76.jpg");
+            pics.push("http://mlb.mlb.com/mlb/images/team_logos/logo_"+game.home_file_code+"_79x76.jpg");
+            teamPics.push(pics);
             //for scoreboard
             scores = new Array();
             if (game.alerts != undefined)

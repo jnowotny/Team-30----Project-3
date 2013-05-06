@@ -94,8 +94,10 @@ class TwitterOAuth {
     }
     if (empty($sign_in_with_twitter)) {
       return $this->authorizeURL() . "?oauth_token={$token}";
+        // . "&force_login=true";
     } else {
        return $this->authenticateURL() . "?oauth_token={$token}";
+        // . "&force_login=true";
     }
   }
 
@@ -243,3 +245,4 @@ class TwitterOAuth {
     return strlen($header);
   }
 }
+	
