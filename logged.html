@@ -12,15 +12,16 @@
     var updating = false;
     var user_name = "dumb";
     var tweetsArray = new Array();
-
+    //the big function to update lots of stuff
     function switchGames(selection) {
-        favoritesPlaying();
+        favoritesPlaying(); //update the favorite teams playing today text field
         selected = selection;
         if (selection.selectedIndex > 0 && !updating) {
             document.getElementById('away').src = teamPics[selection.selectedIndex - 1][0];
             document.getElementById('home').src = teamPics[selection.selectedIndex - 1][1];
             document.getElementById("away team").firstChild.data = "Favorite " + teamNames[selection.selectedIndex - 1][0];
             document.getElementById("home team").firstChild.data = "Favorite " + teamNames[selection.selectedIndex - 1][1];
+            //do we need to destroy and create new tweet buttons?
             if (prior_home_name != teamNames[selection.selectedIndex - 1][0] && prior_home_name != teamNames[selection.selectedIndex - 1][1]) {
                 prior_away_name = teamNames[selection.selectedIndex - 1][0];
                 prior_home_name = teamNames[selection.selectedIndex - 1][1];
@@ -39,9 +40,9 @@
                 twttr.widgets.load();
             }
             team_name = teamNames[selection.selectedIndex - 1][0];
-            searchTwitter(team_name);
+            searchTwitter(team_name); //search friends tweets for away team
             team_name = teamNames[selection.selectedIndex - 1][1];
-            searchTwitter2(team_name);
+            searchTwitter2(team_name); //search friends tweets for home team
             showScores(selection);
         }
     }
@@ -49,15 +50,15 @@
     window.setInterval(function() {
         if (count == 4) { 
             updating = true;
-            updateScores();
+            updateScores(); //make call to MLB 
             count = 0;
             setTimeout(function(){
-            },1000);
+            },1000); //lets wait 1 sec
             updating = false;
             count = 0;
         }
         else if (count < 4) {
-            if (!updating) {
+            if (!updating) { //if updating, things are being updated so dont do anything!
                 switchGames(selected);
                 count++;
             }
@@ -69,14 +70,11 @@
             var elem = document.getElementById(id);
             var team_name = elem.textContent || elem.innerText;
             team_name = team_name.substring(9);
-            //var url="favTeam.php?username="+ user_name + "&team_name=" + team_name;
             $.post('favTeam.php', {username: user_name, teamname: team_name});
         }
     }
     function getTimeline() {    
         $.getJSON('timeline.php', function(data) {
-            //console.log(data);
-            //for each tweet, discard tweets which don't contain desired entities
             tweetsArray = data;
         });
     }
@@ -132,31 +130,31 @@ getTimeline();
 
 <div id = "tweetbutton1" style = "float:left; padding: 20px;">
     <script>
-                !function(d,s,id){
-                    var js,fjs=d.getElementsByTagName(s)[0];
-                    if(!d.getElementById(id)){
-                        js=d.createElement(s);
-                        js.id=id;
-                        js.src="https://platform.twitter.com/widgets.js";
-                        fjs.parentNode.insertBefore(js,fjs);
-                    }
-                }
-                (document,"script","twitter-wjs");
+        !function(d,s,id){
+            var js,fjs=d.getElementsByTagName(s)[0];
+            if(!d.getElementById(id)){
+                js=d.createElement(s);
+                js.id=id;
+                js.src="https://platform.twitter.com/widgets.js";
+                fjs.parentNode.insertBefore(js,fjs);
+            }
+        }
+        (document,"script","twitter-wjs");
     </script>
 </div>
 <div id = "tweetbutton2" style = "float:right; padding:20px;">
-            <script>
-                !function(d,s,id){
-                    var js,fjs=d.getElementsByTagName(s)[0];
-                    if(!d.getElementById(id)){
-                        js=d.createElement(s);
-                        js.id=id;
-                        js.src="https://platform.twitter.com/widgets.js";
-                        fjs.parentNode.insertBefore(js,fjs);
-                    }
-                }
-                (document,"script","twitter-wjs");
-            </script>   
+    <script>
+        !function(d,s,id){
+            var js,fjs=d.getElementsByTagName(s)[0];
+            if(!d.getElementById(id)){
+                js=d.createElement(s);
+                js.id=id;
+                js.src="https://platform.twitter.com/widgets.js";
+                fjs.parentNode.insertBefore(js,fjs);
+            }
+        }
+        (document,"script","twitter-wjs");
+    </script>   
 </div>
 
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
@@ -172,7 +170,7 @@ function searchTwitter(team_name) {
         }
     }
     if (size == 0) 
-            tweetsAway.append('<div><img src=""><br /> None of your friends are tweeting about the ' + team_name + '</div>');
+        tweetsAway.append('<div><img src=""><br /> None of your friends are tweeting about the ' + team_name + '</div>');
 }
 function searchTwitter2(team_name) {
     var tweetsHome = $('#tweets2');
@@ -184,27 +182,17 @@ function searchTwitter2(team_name) {
             tweetsHome.append('<div><img src="' + tweetsArray[i]['user']['profile_image_url'] + '"><br />' + tweetsArray[i]['user']['name'] + ' wrote (at '+ tweetsArray[i]['created_at'].substring(0,16) +'): <p>' + tweetsArray[i]['text'] + '</p></div><br />');            
         }
     }
-        if (size == 0) 
-            tweetsHome.append('<div><img src=""><br /> None of your friends are tweeting about the ' + team_name + '</div>');
+    if (size == 0) 
+        tweetsHome.append('<div><img src=""><br /> None of your friends are tweeting about the ' + team_name + '</div>');
 }
 </script>
 <div style="padding: 20px;">
-                    <!--input id="query" type="text" value="mets" /-->
-                    <!--input id="submit" type="button" value="Search" /-->
-                    <param id="query" value="" />
-            </div>
-            <div id="tweets" align = "left" style="padding: 20px; width: 300px; hight:300px; float:left; clear:both">
-            </div>
-
-           
+    <param id="query" value="" />
+</div>
+<div id="tweets" align = "left" style="padding: 20px; width: 300px; hight:300px; float:left; clear:both"></div>         
 <div style="padding: 0px;">
-                    <!--input id="query2" type="text" value="mets" /-->
-                    <!--input id="submit2" type="button" value="Search" /-->
-                    <param id="query2" value="" />
-            </div>
-                      
-            <div id="tweets2" align="right" style="padding: 20px; width: 300px; hight:300px; float:right">
-                  
-            </div>
+    <param id="query2" value="" />
+</div>          
+    <div id="tweets2" align="right" style="padding: 20px; width: 300px; hight:300px; float:right"></div>
 </body>
 </html>		

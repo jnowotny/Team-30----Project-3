@@ -77,7 +77,6 @@
                     var tweets = $('#tweets');
                     tweets.html('');
                     for (res in data['results']) {
-                        //tweets.append('<img>' + data['results'][res]['profile_image_url'] + '</img>');
                         tweets.append('<div><img src="' + data['results'][res]['profile_image_url'] + '"><br />' + data['results'][res]['from_user_name'] + ' wrote: <p>' + data['results'][res]['text'] + '</p></div><br />');
                     }   
                 }
@@ -118,8 +117,6 @@
         });
     </script>
     <div style="padding: 20px;">
-                    <!--input id="query" type="text" value="mets" /-->
-                    <!--input id="submit" type="button" value="Search" /-->
                     <param id="query" value="" />
             </div>
             <div id="tweets" align = "left" style="padding: 20px; width: 300px; hight:300px; float:left; clear:both">
@@ -127,8 +124,6 @@
             </div>
             
     <div style="padding: 10px;">
-                    <!--input id="query2" type="text" value="mets" /-->
-                    <!--input id="submit2" type="button" value="Search" /-->
                     <param id="query2" value="" />
                     
             </div>

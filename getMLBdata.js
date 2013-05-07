@@ -156,7 +156,6 @@ function showScores(selection) {
     var homeCell = row3.insertCell(-1);
     homeCell.appendChild(document.createTextNode(teamNames[selection.selectedIndex - 1][1]));
     if (gamesToday[selection.selectedIndex - 1].length >= 15) {
-        //document.write("hello");
         for (i = 0; i < gamesToday[selection.selectedIndex - 1].length; i++) {
             var cell = row3.insertCell(-1);
             if (gamesToday[selection.selectedIndex - 1][i][1] != null) {

@@ -2,7 +2,7 @@
 $user_name = $_POST['username'];
 $team_name = $_POST['teamname'];
 
-$con = mysqli_connect("mysql7.000webhost.com","a9710941_jnowot","sm0key","a9710941_db");
+$con = mysqli_connect("mysql7.000webhost.com","a9710941_jnowot","sm0key","a9710941_db"); //connect to mysql database
 // Check connection
 if (mysqli_connect_errno())
     echo "Failed to connect to MySQL: " . mysqli_connect_error();
@@ -10,7 +10,7 @@ if (mysqli_connect_errno())
 $exists_query = "SELECT * FROM Users WHERE NAME = '$user_name'";
 $result = mysqli_query($con, $exists_query);
 $row = mysqli_fetch_array($result);
-if ($row['XML'] == "nothing") {
+if ($row['XML'] == "nothing") { //if there is no prior XML data, we want to create new XML data
     $favoriteXML = new SimpleXMLElement("<favorite_teams></favorite_teams>");
     $favoriteXML->addChild("team", $team_name);
     //Header('Content-type: text/html');
@@ -19,7 +19,7 @@ if ($row['XML'] == "nothing") {
     print_r($update_query);
     mysqli_query($con, $update_query);
 }
-else {
+else { //XML data exists, we want to update it
     $string = $row['XML'];
     $existXML = new SimpleXMLElement($string);
     $team_exists = FALSE;
