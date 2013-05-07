@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Abraham Williams (abraham@abrah.am) http://abrah.am
+ * 
  *
  * The first PHP Library to support OAuth for Twitter's REST API.
  */
@@ -93,11 +93,9 @@ class TwitterOAuth {
       $token = $token['oauth_token'];
     }
     if (empty($sign_in_with_twitter)) {
-      return $this->authorizeURL() . "?oauth_token={$token}";
-        // . "&force_login=true";
+      return $this->authorizeURL() . "?oauth_token={$token}" . "&force_login=true";
     } else {
-       return $this->authenticateURL() . "?oauth_token={$token}";
-        // . "&force_login=true";
+       return $this->authenticateURL() . "?oauth_token={$token}" . "&force_login=true";
     }
   }
 

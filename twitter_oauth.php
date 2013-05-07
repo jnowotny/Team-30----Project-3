@@ -5,9 +5,9 @@ session_start();
 
 if(!empty($_GET['oauth_verifier']) && !empty($_SESSION['oauth_token']) && !empty($_SESSION['oauth_token_secret'])){
 $twitteroauth = new TwitterOAuth('mBbU4Bo5Topp6VEwrLM8ow', 'YqJiwzcj4olqP14hjvzcz5CHqkmvvGurINd6UKbiwOs', $_SESSION['oauth_token'], $_SESSION['oauth_token_secret']);
+$_SESSION['twitteroauth'] = $twitteroauth;
 
 $access_token = $twitteroauth->getAccessToken($_GET['oauth_verifier']);
-
 $_SESSION['access_token'] = $access_token;
 
 $user_info = $twitteroauth->get('account/verify_credentials');

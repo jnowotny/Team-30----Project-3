@@ -2,21 +2,17 @@
 <html>
 
 <script src = getMLBdata.js></script>
+<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script>
-
+    var prior_away_name = "";
+    var prior_home_name = "";
     var selected = -1;
     var count = 0;
     var updating = false;
     var user_name = "dumb";
     var tweetsArray = new Array();
-    function favoritesPlaying() {
-        $.post('teamsPlaying.php', {teamnames: teamNames, username: user_name}, function(data) {
-            var teamsPlayingString = "The following of your favorite teams are playing today: ";
-            teamsPlayingString = teamsPlayingString.concat(data);
-            document.getElementById("favTeamsPlaying").textContent = teamsPlayingString;
-        });
-    }
+
     function switchGames(selection) {
         favoritesPlaying();
         selected = selection;
@@ -25,7 +21,24 @@
             document.getElementById('home').src = teamPics[selection.selectedIndex - 1][1];
             document.getElementById("away team").firstChild.data = "Favorite " + teamNames[selection.selectedIndex - 1][0];
             document.getElementById("home team").firstChild.data = "Favorite " + teamNames[selection.selectedIndex - 1][1];
-            var team_name = teamNames[selection.selectedIndex - 1][0];
+            if (prior_home_name != teamNames[selection.selectedIndex - 1][0] && prior_home_name != teamNames[selection.selectedIndex - 1][1]) {
+                prior_away_name = teamNames[selection.selectedIndex - 1][0];
+                prior_home_name = teamNames[selection.selectedIndex - 1][1];
+                while (document.getElementById("tweetbutton1").firstChild)
+                    document.getElementById("tweetbutton1").removeChild(document.getElementById("tweetbutton1").firstChild);
+                while (document.getElementById("tweetbutton2").firstChild)
+                    document.getElementById("tweetbutton2").removeChild(document.getElementById("tweetbutton2").firstChild);
+                var team_name = teamNames[selection.selectedIndex - 1][0];
+                team_name = team_name.replace(/\s/g,'');
+                console.log(team_name);
+                $('#tweetbutton1').append('<a id ="tb1" href="https://twitter.com/intent/tweet?button_hashtag='+team_name+'" class="twitter-hashtag-button" data-lang="en">Tweet</a>');
+                //loading widgets
+                team_name = teamNames[selection.selectedIndex - 1][1];
+                team_name = team_name.replace(/\s/g,'');
+                $('#tweetbutton2').append('<a id = "tb2" href="https://twitter.com/intent/tweet?button_hashtag='+team_name+'" class="twitter-hashtag-button" data-lang="en">Tweet</a>');
+                twttr.widgets.load();
+            }
+            team_name = teamNames[selection.selectedIndex - 1][0];
             searchTwitter(team_name);
             team_name = teamNames[selection.selectedIndex - 1][1];
             searchTwitter2(team_name);
@@ -39,14 +52,15 @@
             updateScores();
             count = 0;
             setTimeout(function(){
-                switchGames(selected);
             },1000);
             updating = false;
             count = 0;
         }
         else if (count < 4) {
-            switchGames(selected);
-            count++;
+            if (!updating) {
+                switchGames(selected);
+                count++;
+            }
         }
     }, 5000);
 
@@ -66,6 +80,18 @@
             tweetsArray = data;
         });
     }
+
+    function favoritesPlaying() {
+        $.post('teamsPlaying.php', {teamnames: teamNames, username: user_name}, function(data) {
+            var teamsPlayingString = "The following of your favorite teams are playing today: ";
+            teamsPlayingString = teamsPlayingString.concat(data);
+            document.getElementById("favTeamsPlaying").textContent = teamsPlayingString;
+        });
+    }
+
+    window.setInterval(function() {
+        getTimeline();
+    }, 60000);
 </script>
 
 <head>
@@ -101,27 +127,65 @@ getTimeline();
     <script>getGames();</script>
     <img id = 'away' src="" width="79" height="76" align = "left" border = "0">
     <img id = "home" src="" width="79" height="76" align = "right" border = "0">
+    <p>
 </center>
+
+<div id = "tweetbutton1" style = "float:left; padding: 20px;">
+    <script>
+                !function(d,s,id){
+                    var js,fjs=d.getElementsByTagName(s)[0];
+                    if(!d.getElementById(id)){
+                        js=d.createElement(s);
+                        js.id=id;
+                        js.src="https://platform.twitter.com/widgets.js";
+                        fjs.parentNode.insertBefore(js,fjs);
+                    }
+                }
+                (document,"script","twitter-wjs");
+    </script>
+</div>
+<div id = "tweetbutton2" style = "float:right; padding:20px;">
+            <script>
+                !function(d,s,id){
+                    var js,fjs=d.getElementsByTagName(s)[0];
+                    if(!d.getElementById(id)){
+                        js=d.createElement(s);
+                        js.id=id;
+                        js.src="https://platform.twitter.com/widgets.js";
+                        fjs.parentNode.insertBefore(js,fjs);
+                    }
+                }
+                (document,"script","twitter-wjs");
+            </script>   
+</div>
 
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script>
 function searchTwitter(team_name) {
     var tweetsAway = $('#tweets');
     tweetsAway.html('');
-    
-    for (i = 0; i < tweetsArray.length; i++) {
-
-        if (tweetsArray[i].text.search(team_name) > -1) 
-            tweetsAway.append('<div><img src="' + tweetsArray[i]['user']['profile_image_url'] + '"><br />' + tweetsArray[i]['user']['name'] + ' wrote: <p>' + tweetsArray[i]['text'] + '</p></div><br />');            
+    var size = 0;
+    for (i = 0; i < tweetsArray.length && size < 11; i++) {
+        if ((tweetsArray[i]['text'].toLowerCase().search(team_name.toLowerCase()) > -1 || tweetsArray[i]['text'].toLowerCase().search(team_name.toLowerCase().replace(/\s/g,'')) > -1) && tweetsArray[i]['user']['name'].search(team_name) == -1) {
+            size++;
+            tweetsAway.append('<div><img src="' + tweetsArray[i]['user']['profile_image_url'] + '"><br />' + tweetsArray[i]['user']['name'] + ' wrote (at '+ tweetsArray[i]['created_at'].substring(0,16) +'): <p>' + tweetsArray[i]['text'] + '</p></div><br />');            
+        }
     }
+    if (size == 0) 
+            tweetsAway.append('<div><img src=""><br /> None of your friends are tweeting about the ' + team_name + '</div>');
 }
 function searchTwitter2(team_name) {
     var tweetsHome = $('#tweets2');
     tweetsHome.html('');
-    for (i = 0; i < tweetsArray.length; i++) {
-        if (tweetsArray[i]['text'].search(team_name) > -1) 
-            tweetsHome.append('<div><img src="' + tweetsArray[i]['user']['profile_image_url'] + '"><br />' + tweetsArray[i]['user']['name'] + ' wrote: <p>' + tweetsArray[i]['text'] + '</p></div><br />');            
+    var size = 0;
+    for (i = 0; i < tweetsArray.length && size < 11; i++) {
+        if ((tweetsArray[i]['text'].toLowerCase().search(team_name.toLowerCase()) > -1 || tweetsArray[i]['text'].toLowerCase().search(team_name.toLowerCase().replace(/\s/g,'')) > -1) && tweetsArray[i]['user']['name'].search(team_name) == -1) {
+            size++;
+            tweetsHome.append('<div><img src="' + tweetsArray[i]['user']['profile_image_url'] + '"><br />' + tweetsArray[i]['user']['name'] + ' wrote (at '+ tweetsArray[i]['created_at'].substring(0,16) +'): <p>' + tweetsArray[i]['text'] + '</p></div><br />');            
+        }
     }
+        if (size == 0) 
+            tweetsHome.append('<div><img src=""><br /> None of your friends are tweeting about the ' + team_name + '</div>');
 }
 </script>
 <div style="padding: 20px;">
@@ -130,17 +194,17 @@ function searchTwitter2(team_name) {
                     <param id="query" value="" />
             </div>
             <div id="tweets" align = "left" style="padding: 20px; width: 300px; hight:300px; float:left; clear:both">
-                    Tweets will go here.
             </div>
-            
-    <div style="padding: 10px;">
+
+           
+<div style="padding: 0px;">
                     <!--input id="query2" type="text" value="mets" /-->
                     <!--input id="submit2" type="button" value="Search" /-->
                     <param id="query2" value="" />
-                    
             </div>
+                      
             <div id="tweets2" align="right" style="padding: 20px; width: 300px; hight:300px; float:right">
-                    Tweets will go here.
+                  
             </div>
 </body>
-</html>
+</html>		

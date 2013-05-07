@@ -9,8 +9,10 @@ function getGames() {
         var select = document.getElementById("selectGame");
         $.each(JSON.data.games.game, function(i, game) {
             names = new Array();
-            names.push(game.away_team_name);
-            names.push(game.home_team_name);
+            var team_name = game.away_team_name.replace('-','');
+            names.push(team_name);
+            var team_name = game.home_team_name.replace('-','');
+            names.push(team_name);
             teamNames.push(names);
             //for team logo picture URLs
             pics = new Array();
@@ -18,7 +20,7 @@ function getGames() {
             pics.push("http://mlb.mlb.com/mlb/images/team_logos/logo_"+game.home_file_code+"_79x76.jpg");
             teamPics.push(pics);
             //for drop-down menu
-            matchup = game.away_team_name + " vs. " + game.home_team_name;
+            matchup = game.away_team_name.replace('-','') + " vs. " + game.home_team_name.replace('-','');
             var Entry = document.createElement("option");
             Entry.text = matchup;
             select.add(Entry, null);
